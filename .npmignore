@@ -1,0 +1,14 @@
+/.DS_Store
+/.idea
+/node_modules
+/scripts
+/src
+/example
+/tsconfig.json
+/webpack.config.js
+/global
+/test
+/.eslintrc.js
+/.eslintignore
+/.travis.yml
+/.gitignore

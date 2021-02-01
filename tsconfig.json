@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "lib": ["es2016", "dom"],
+    "outDir": "lib",
+    "sourceMap": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": "./",
+    "paths": {
+      "@app": [ "src/index" ]
+    }
+  },
+  "exclude": ["node_modules", "./src/_*/**", "./src/**/_*/**"],
+  "include": ["./src/**/*"]
+}
