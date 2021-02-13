@@ -1,6 +1,5 @@
 import * as crypto from 'crypto';
 import * as CoinbasePro from 'coinbase-pro';
-import debug from 'debug';
 
 // TODO replace with calls to SSM with KMS encryption
 const secret = process.env.COINBASE_SECRET_KEY;
@@ -11,11 +10,6 @@ const passphrase = process.env.COINBASE_PASSWORD;
 const endpoint = process.env.COINBASE_ENDPOINT;
 // 'wss://ws-feed-public.sandbox.pro.coinbase.com'
 const socketEndpoint = process.env.COINBASE_SOCKET_ENDPOINT;
-// send errors to stderr
-const logError = debug('coinbase-bots:log:error');
-// send log messages to stdout
-const log = debug('coinbase-bots:log');
-log.log = console.log.bind(console);
 
 export function sign<T>(method = 'POST', body: T, requestPath) {
   const timestamp = Date.now() / 1000;
@@ -40,7 +34,7 @@ export function getAuthenticatedClient(): CoinbasePro.AuthenticatedClient {
 // TODO restrict products to enums
 function getAuthenticatedSocket(
   products?: string[],
-  channels = ['full', 'level2'],
+  channels = ['ticker', 'status'],
 ): CoinbasePro.WebsocketClient {
   return new CoinbasePro.WebsocketClient(
     products,
@@ -74,19 +68,17 @@ function sleep(ms) {
 export function subscribe(
   subscriber: SubscriberType,
   products?: string[],
-  channels = ['full', 'level2'],
+  channels = ['ticker', 'level2'],
   keepAlive = true,
 ): SubscriptionType {
+
   let websocket = getAuthenticatedSocket(products, channels);
 
   websocket.on('message', (data) => {
     /* work with data */
-    log(data);
     subscriber.onData(data);
   });
   websocket.on('error', (err) => {
-    /* handle error */
-    logError(err);
     subscriber.onError(err);
     // reconnect
     subscribe(subscriber, products, channels);
